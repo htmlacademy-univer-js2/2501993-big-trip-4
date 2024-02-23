@@ -59,9 +59,6 @@ export default class SortingView {
 
     }
 
-
-
-
     return this.element;
 
   }
