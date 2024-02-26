@@ -1,13 +1,13 @@
 import { createElement } from '../render';
 
-const createRoutePointListTemplate = () => (
+const createtripPointListTemplate = () => (
   `<ul class="trip-events__list">
   </ul>`
 );
 
-export default class RoutePointListView {
+export default class tripPointListView {
   getTemplate () {
-    return createRoutePointListTemplate;
+    return createtripPointListTemplate;
   }
 
   getElement() {
