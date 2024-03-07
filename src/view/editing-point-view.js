@@ -1,6 +1,6 @@
-import { createElement } from '../render';
+import { createElement } from '../render.js';
 import { getDateTime } from '../utils.js';
-
+import { POINT_EMPTY } from '../mock/trip-point.js';
 const renderDestinationPictures = (pictures) => {
   let result = '';
   pictures.forEach((picture) => {

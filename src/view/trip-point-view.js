@@ -1,5 +1,5 @@
 import { createElement } from '../render';
-import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utils.js';
+import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../const.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {

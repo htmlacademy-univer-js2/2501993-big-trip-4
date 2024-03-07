@@ -1,5 +1,5 @@
 import { createElement } from '../render';
-const createSOrtingtemplate = () => (
+const createSortingtemplate = () => (
 
   `          <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
@@ -42,10 +42,10 @@ const createSOrtingtemplate = () => (
 </form>`
 
 );
-export default class SortingView {
+export default class SortView {
 
   getTemplate() {
-    return createSOrtingtemplate;
+    return createSortingtemplate;
   }
 
   getElement() {
