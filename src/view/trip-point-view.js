@@ -5,14 +5,13 @@ const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {
     return '';
   }
-  let result = allOffers.reduce((acc, offer) => {
-    if (checkedOffers.includes(offer.id)) {
-      acc += `<li class="event__offer"><span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
-    }
-    return acc;
-  }, '');
 
-  return result;
+  return allOffers.reduce((result, offer) => {
+    if (checkedOffers.includes(offer.id)) {
+      return `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
+    }
+    return result;
+  }, '');
 };
 
 const createTripPointTemplate = (tripPoint, destinations, offers) => {
