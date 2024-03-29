@@ -12,7 +12,7 @@ export default class TripPointPresenter {
   #destinations = null;
   #offers = null;
 
-constructor(tripContainer) {
+  constructor(tripContainer) {
     this.#tripPointsList = new TripPointListView();
     this.#tripContainer = tripContainer;
   }
