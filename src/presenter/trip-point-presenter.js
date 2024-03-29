@@ -2,6 +2,7 @@ import TripPointView from '../view/trip-point-view.js';
 import EditingTripPointView from '../view/editing-trip-point-view.js';
 import SortView from '../view/sort-view.js';
 import { render, replace } from '../framework/render.js';
+import TripPointListView from '../view/trip-point-list-view.js';
 
 export default class TripPointPresenter {
   #tripPointsList = null;
