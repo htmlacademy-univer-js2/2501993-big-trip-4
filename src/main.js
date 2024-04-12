@@ -5,9 +5,9 @@ import TripPointsModel from './model/trip-point-model.js';
 import { getTripPoints, getDestinations, getOffersByType } from './mock/trip-point.js';
 import { generateFilter } from './mocks/filter.js';
 
-const HeaderContainer = document.querySelector('.trip-main');
-const MainContainer = document.querySelector('.page-main');
-const tripPointsPresenter = new TripPointPresenter(MainContainer.querySelector('.trip-events'));
+const siteHeaderElement = document.querySelector('.trip-main');
+const siteMainElement = document.querySelector('.page-main');
+const tripPointsPresenter = new TripPointPresenter(siteMainElement.querySelector('.trip-events'));
 
 const tripPoints = getTripPoints();
 const offersByType = getOffersByType();
