@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getDateTime } from '../utils.js';
 const renderDestinationPictures = (pictures) => {
   let result = '';
@@ -131,26 +131,39 @@ const createEditingTripPointTemplate = (tripPoint, destinations, offers) => {
   );
 };
 
-export default class EditingTripPointView {
+export default class EditingTripPointView extends AbstractView {
+  #tripPoint = null;
+  #destination = null;
+  #offers = null;
+
   constructor(tripPoint, destination, offers) {
-    this.tripPoint = tripPoint;
-    this.destination = destination;
-    this.offers = offers;
+    super();
+    this.#tripPoint = tripPoint;
+    this.#destination = destination;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createEditingTripPointTemplate(this.tripPoint, this.destination, this.offers);
+  get template() {
+    return createEditingTripPointTemplate(this.#tripPoint, this.#destination, this.#offers);
   }
 
-  getElement() {
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
+  setPreviewClickHandler = (callback) => {
+    this._callback.previewClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#previewClickHandler);
+  };
 
-    return this.element;
-  }
+  #previewClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.previewClick();
+  };
 
-  removeElement() {
-    this.element = null;
-  }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 }

@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../const.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
@@ -57,26 +57,29 @@ const createTripPointTemplate = (tripPoint, destinations, offers) => {
   );
 };
 
-export default class TripPointView {
+export default class TripPointView extends AbstractView{
+  #tripPoint = null;
+  #destination = null;
+  #offers = null;
+
   constructor(tripPoint, destination, offers) {
-    this.tripPoint = tripPoint;
-    this.destination = destination;
-    this.offers = offers;
+    super();
+    this.#tripPoint = tripPoint;
+    this.#destination = destination;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createTripPointTemplate(this.tripPoint, this.destination, this.offers);
+  get template() {
+    return createTripPointTemplate(this.#tripPoint, this.#destination, this.#offers);
   }
 
-  getElement() {
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }
