@@ -6,7 +6,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 const DATE_TIME_FORMAT = 'DD/MM/YY hh:mm';
 const TIME_FORMAT = 'hh:mm';
 
-const humanizetripPointDueDate = (date) => dayjs(date).format('DD MMM');
+const humanizeTripPointDueDate = (date) => dayjs(date).format('DD MMM');
 
 const getDaysOutput = (days) => days <= 0 ? '' : `${`${days}`.padStart(2, '0')}D`;
 
@@ -62,6 +62,22 @@ const FilterType = {
   PAST: 'past'
 };
 
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
+
+const SortTypeDescription = {
+  [SortType.DAY]: 'Day',
+  [SortType.EVENT]: 'Event',
+  [SortType.TIME]: 'Time',
+  [SortType.PRICE]: 'Price',
+  [SortType.OFFERS]: 'Offers',
+};
+
 const filter = {
   [FilterType.EVERYTHING]: (tripPoints) => tripPoints,
   [FilterType.FUTURE]: (tripPoints) => tripPoints.filter((tripPoint) => isPointDateFuture(tripPoint.dateFrom)),
@@ -82,4 +98,20 @@ const updateItem = (items, update) => {
   ];
 };
 
-export { getRandomInteger, getRandomElement, humanizetripPointDueDate, getDuration, getDate, getDateTime, getTime, filter, updateItem };
+const sortDayTripPoint = (tripPointA, tripPointB) => dayjs(tripPointA.dateFrom).diff(dayjs(tripPointB.dateFrom));
+
+const sortTimeTripPoint = (tripPointA, tripPointB) => {
+  const timeTripPointA = dayjs(tripPointA.dateTo).diff(dayjs(tripPointA.dateFrom));
+  const timeTripPointB = dayjs(tripPointB.dateTo).diff(dayjs(tripPointB.dateFrom));
+  return timeTripPointB - timeTripPointA;
+};
+
+const sortPriceTripPoint = (tripPointA, tripPointB) => tripPointB.basePrice - tripPointA.basePrice;
+
+const sorting = {
+  [SortType.DAY]: (tripPoints) => tripPoints.sort(sortDayTripPoint),
+  [SortType.TIME]: (tripPoints) => tripPoints.sort(sortTimeTripPoint),
+  [SortType.PRICE]: (tripPoints) => tripPoints.sort(sortPriceTripPoint),
+};
+
+export { getRandomInteger, getRandomElement, humanizeTripPointDueDate, getDuration, getDate, getDateTime, getTime, filter, updateItem, sorting, SortType, SortTypeDescription };
