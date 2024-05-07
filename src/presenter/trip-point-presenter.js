@@ -1,78 +1,111 @@
 import TripPointView from '../view/trip-point-view.js';
 import EditingTripPointView from '../view/editing-trip-point-view.js';
-import SortView from '../view/sort-view.js';
-import { render, replace } from '../framework/render.js';
-import TripPointListView from '../view/trip-point-list-view.js';
-import NoTripPointView from '../view/no-trip-point-view.js';
+import { render, replace, remove } from '../framework/render.js';
+
+const Mode = {
+  PREVIEW: 'preview',
+  EDITING: 'editing',
+};
 
 export default class TripPointPresenter {
   #tripPointsList = null;
-  #tripContainer = null;
   #tripPointsModel = null;
-  #tripPoints = null;
   #destinations = null;
   #offers = null;
 
-  constructor(tripContainer) {
-    this.#tripPointsList = new TripPointListView();
-    this.#tripContainer = tripContainer;
+  #previewTripPointComponent = null;
+  #editingTripPointComponent = null;
+
+  #changeData = null;
+  #changeMode = null;
+
+  #tripPoint = null;
+  #mode = Mode.PREVIEW;
+
+  constructor(tripPointsList, tripPointsModel, changeData, changeMode) {
+    this.#tripPointsList = tripPointsList;
+    this.#tripPointsModel = tripPointsModel;
+    this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
-  init (tripPointsModel) {
-    this.#tripPointsModel = tripPointsModel;
-    this.#tripPoints = [...this.#tripPointsModel.tripPoints];
+  init (tripPoint) {
+    this.#tripPoint = tripPoint;
     this.#destinations = [...this.#tripPointsModel.destinations];
     this.#offers = [...this.#tripPointsModel.offers];
 
-    if (this.#tripPoints.length === 0) {
-      render(new NoTripPointView(), this.#tripContainer);
-    }
-    else {
-      render(new SortView(), this.#tripContainer);
-      render(this.#tripPointsList, this.#tripContainer);
-      for (const tripPoint of this.#tripPoints){
-        this.#renderTripPoint(tripPoint);
-      }
+    const prevPreviewTripPointComponent = this.#previewTripPointComponent;
+    const prevEditingTripPointComponent = this.#editingTripPointComponent;
+
+    this.#previewTripPointComponent = new TripPointView(this.#tripPoint, this.#destinations, this.#offers);
+    this.#editingTripPointComponent = new EditingTripPointView(this.#tripPoint, this.#destinations, this.#offers);
+
+    this.#previewTripPointComponent.setEditClickHandler(this.#handleEditClick);
+    this.#previewTripPointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+    this.#editingTripPointComponent.setPreviewClickHandler(this.#handlePreviewClick);
+    this.#editingTripPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
+
+    if (prevPreviewTripPointComponent === null || prevEditingTripPointComponent === null) {
+      render(this.#previewTripPointComponent, this.#tripPointsList);
+      return;
     }
 
+    if (this.#mode === Mode.PREVIEW) {
+      replace(this.#previewTripPointComponent, prevPreviewTripPointComponent);
+    }
+    if (this.#mode === Mode.EDITING) {
+      replace(this.#editingTripPointComponent, prevEditingTripPointComponent);
+    }
+    remove(prevPreviewTripPointComponent);
+    remove(prevEditingTripPointComponent);
   }
 
-  #renderTripPoint = (tripPoint) => {
-    const tripPointComponent = new TripPointView(tripPoint, this.#destinations, this.#offers);
-    const pointEditComponent = new EditingTripPointView(tripPoint, this.#destinations, this.#offers);
+  destroy = () => {
+    remove(this.#previewTripPointComponent);
+    remove(this.#editingTripPointComponent);
+  };
 
-    const replaceTripPointToEditForm = () => {
-      replace(pointEditComponent, tripPointComponent);
-    };
+  resetView = () => {
+    if (this.#mode !== Mode.PREVIEW) {
+      this.#replaceEditingPointToPreviewPoint();
+    }
+  };
 
-    const replaceEditFormToTripPoint = () => {
-      replace(tripPointComponent, pointEditComponent);
-    };
+  #replacePreviewPointToEditingPoint = () => {
+    replace(this.#editingTripPointComponent, this.#previewTripPointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
+  };
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceEditFormToTripPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
+  #replaceEditingPointToPreviewPoint = () => {
+    replace(this.#previewTripPointComponent, this.#editingTripPointComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.PREVIEW;
+  };
 
-    tripPointComponent.setEditClickHandler(() => {
-      replaceTripPointToEditForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.resetView();
+    }
+  };
 
-    pointEditComponent.setPreviewClickHandler(() => {
-      replaceEditFormToTripPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#tripPoint, isFavorite: !this.#tripPoint.isFavorite});
+  };
 
-    pointEditComponent.setFormSubmitHandler(() => {
-      replaceEditFormToTripPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
+  #handleEditClick = () => {
+    this.#replacePreviewPointToEditingPoint();
+  };
 
-    render(tripPointComponent, this.#tripPointsList.element);
+  #handlePreviewClick = () => {
+    this.#replaceEditingPointToPreviewPoint();
+  };
+
+  #handleFormSubmit = (point) => {
+    this.#changeData(point);
+    this.#replaceEditingPointToPreviewPoint();
   };
 }
 

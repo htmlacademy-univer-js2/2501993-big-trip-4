@@ -41,7 +41,7 @@ const getOffersByType = () => Array.from({length: TYPES.length}).map((_, index) 
 const offersByType = getOffersByType();
 const destinations = getDestinations();
 
-const generateTripPoint = (id) => {
+const generateTripPoint = () => {
   const offersByTypeTripPoint = getRandomElement(offersByType);
   const allOfferIdsByTypeTripPoint = offersByTypeTripPoint.offers.map((offer) => offer.id);
   return {
@@ -49,13 +49,13 @@ const generateTripPoint = (id) => {
     dateFrom: dayjs().add(getRandomInteger(-3, -1), 'day').add(getRandomInteger(-2, 0), 'hour').add(getRandomInteger(-59, 0), 'minute'),
     dateTo: dayjs().add(getRandomInteger(-1, 2), 'day').add(getRandomInteger(0, 2), 'hour').add(getRandomInteger(0, 59), 'minute'),
     destinationId: getRandomElement(destinations).id,
-    id,
+    id:crypto.randomUUID(),
     isFavorite: Boolean(getRandomInteger()),
     offerIds: Array.from({length: getRandomInteger(0, allOfferIdsByTypeTripPoint.length)}).map(() => allOfferIdsByTypeTripPoint[getRandomInteger(0, allOfferIdsByTypeTripPoint.length - 1)]),
     type: offersByTypeTripPoint.type,
   };
 };
 
-const getTripPoints = () => Array.from({length: TRIP_POINTS_COUNT}).map((_, index) => generateTripPoint (index + 1));
+const getTripPoints = () => Array.from({length: TRIP_POINTS_COUNT}).map(() => generateTripPoint());
 
 export { getTripPoints, getDestinations, getOffersByType };
