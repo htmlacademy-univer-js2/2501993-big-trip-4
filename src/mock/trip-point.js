@@ -56,6 +56,6 @@ const generateTripPoint = () => {
   };
 };
 
-const getTripPoints = () => Array.from({length: TRIP_POINTS_COUNT}).map(() => generateTripPoint()).sort();;
+const getTripPoints = () => Array.from({length: TRIP_POINTS_COUNT}).map(() => generateTripPoint()).sort();
 
 export { getTripPoints, getDestinations, getOffersByType };

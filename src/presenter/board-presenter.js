@@ -1,11 +1,10 @@
 import SortingView from '../view/sorting-view.js';
 import { remove, render, RenderPosition} from '../framework/render.js';
-import { render, RenderPosition} from '../framework/render.js';
 import TripPointListView from '../view/trip-point-list-view.js';
 import NoTripPointView from '../view/no-trip-point-view.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { sorting, updateItem } from '../utils.js';
-import { SortType } from '../utils.js';
+import { sorting, updateItem, SortType } from '../utils.js';
+
 
 export default class BoardPresenter {
   #tripContainer = null;
