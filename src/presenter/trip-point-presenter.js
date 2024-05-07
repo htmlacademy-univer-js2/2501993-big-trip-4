@@ -67,6 +67,7 @@ export default class TripPointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.PREVIEW) {
+      this.#editingTripPointComponent.reset(this.#tripPoint);
       this.#replaceEditingPointToPreviewPoint();
     }
   };
@@ -87,6 +88,7 @@ export default class TripPointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#editingTripPointComponent.reset(this.#tripPoint);
       this.resetView();
     }
   };
@@ -100,6 +102,7 @@ export default class TripPointPresenter {
   };
 
   #handlePreviewClick = () => {
+    this.#editingTripPointComponent.reset(this.#tripPoint);
     this.#replaceEditingPointToPreviewPoint();
   };
 
