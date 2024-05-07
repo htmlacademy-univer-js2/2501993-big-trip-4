@@ -1,29 +1,45 @@
-import AbstractView from '../framework/view/abstract-view.js';
-import { getDateTime } from '../utils.js';
-const renderDestinationPictures = (pictures) => {
-  let result = '';
-  pictures.forEach((picture) => {
-    result = `${result}<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
-  });
-  return result;
-};
+import dayjs from 'dayjs';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { getDateTime, TripPointType, TripPointTypeDescription } from '../utils.js';
 
-const renderOffers = (allOffers, checkedOffers) => {
-  let result = '';
-  allOffers.forEach((offer) => {
-    const checked = checkedOffers.includes(offer.id) ? 'checked' : '';
-    result = `${result}<div class="event__available-offers">
-    <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${checked}>
-      <label class="event__offer-label" for="event-offer-luggage-1">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`;
-  });
-  return result;
-};
+const renderDestinationPictures = (pictures) => pictures.length === 0 ? '' :
+  pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
+
+const renderDestinationNames = (destinations) => destinations.length === 0 ? '' :
+  destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
+
+
+const renderOffers = (allOffers, checkedOffers) => allOffers.map((offer) => `<div class="event__offer-selector">
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(offer.id) ? 'checked' : ''}>
+  <label class="event__offer-label" for="event-offer-${offer.id}">
+    <span class="event__offer-title">${offer.title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${offer.price}</span>
+  </label>
+</div>`).join('');
+
+const renderOffersContainer = (allOffers, checkedOffers) => (!allOffers || allOffers.offers.length === 0) ? '' :
+  `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    <div class="event__available-offers">
+    ${renderOffers(allOffers.offers, checkedOffers)}
+    </div>
+    </section>`;
+
+const renderEditingPointDateTemplate = (dateFrom, dateTo) => (
+  `<div class="event__field-group  event__field-group--time">
+    <label class="visually-hidden" for="event-start-time-1">From</label>
+    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateFrom)}">
+    &mdash;
+    <label class="visually-hidden" for="event-end-time-1">To</label>
+    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateTo)}">
+  </div>`
+);
+
+const renderEditingPointTypeTemplate = (currentType) => Object.values(TripPointType).map((type) => `<div class="event__type-item">
+<input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? 'checked' : ''}>
+<label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${TripPointTypeDescription[type]}</label>
+</div>`).join('');
 
 const createEditingTripPointTemplate = (tripPoint, destinations, offers) => {
   const {basePrice, type, destinationId, dateFrom, dateTo, offerIds} = tripPoint;
@@ -41,63 +57,20 @@ const createEditingTripPointTemplate = (tripPoint, destinations, offers) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi" ${('taxi' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus" ${('bus' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train" ${('train' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship" ${('ship' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive" ${('drive' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" ${('flight' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in" ${('check-in' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing" ${('sightseeing' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-              </div>
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant" ${('restaurant' === type) ? 'checked' : ''}>
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-              </div>
+              ${renderEditingPointTypeTemplate(type)}
             </fieldset>
           </div>
         </div>
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+        label class="event__label event__type-output" for="event-destination-${destinationId}">
           ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinations[destinationId].name}" list="destination-list-1">
+          <input class="event__input event__input--destination" id="event-destination-${destinationId}" type="text" name="event-destination" value="${destinations[destinationId].name}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+          ${renderDestinationNames(destinations)}
           </datalist>
         </div>
-        <div class="event__field-group  event__field-group--time">
-                   <label class="visually-hidden" for="event-start-time-1">From</label>
-                   <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getDateTime(dateFrom)}">
-                   &mdash;
-                   <label class="visually-hidden" for="event-end-time-1">To</label>
-                   <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getDateTime(dateTo)}">
-                 </div>
+        ${renderEditingPointDateTemplate(dateFrom, dateTo)}
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
@@ -112,10 +85,7 @@ const createEditingTripPointTemplate = (tripPoint, destinations, offers) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${renderOffers(allTripPointTypeOffers.offers, offerIds)}
-        </section>
+      ${renderOffersContainer(allTripPointTypeOffers, offerIds)}
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destinations[destinationId].description}</p>
@@ -131,21 +101,27 @@ const createEditingTripPointTemplate = (tripPoint, destinations, offers) => {
   );
 };
 
-export default class EditingTripPointView extends AbstractView {
-  #tripPoint = null;
+export default class EditingTripPointView extends AbstractStatefulView {
   #destination = null;
   #offers = null;
 
   constructor(tripPoint, destination, offers) {
     super();
-    this.#tripPoint = tripPoint;
+    this._state = EditingTripPointView.parseTripPointToState(tripPoint);
     this.#destination = destination;
     this.#offers = offers;
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEditingTripPointTemplate(this.#tripPoint, this.#destination, this.#offers);
+    return createEditingTripPointTemplate(this._state, this.#destination, this.#offers);
   }
+
+  reset = (tripPoint) => {
+    this.updateElement(
+      EditingTripPointView.parseTripPointToState(tripPoint),
+    );
+  };
 
   setPreviewClickHandler = (callback) => {
     this._callback.previewClick = callback;
@@ -164,6 +140,58 @@ export default class EditingTripPointView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#tripPoint);
+    this._callback.formSubmit(EditingTripPointView.parseStateToTripPoint(this._state));
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setPreviewClickHandler(this._callback.previewClick);
+  };
+
+  #tripPointDestinationChangeHandler = (evt) => {
+    evt.preventDefault();
+    const destination = this.#destination.find((dest) => dest.name === evt.target.value);
+    this.updateElement({
+      destinationId: destination.id,
+    });
+  };
+
+  #tripPointTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+      offerIds: [],
+    });
+  };
+
+  #offersChangeHandler = (evt) => {
+    evt.preventDefault();
+    const offerId = Number(evt.target.id.slice(-1));
+    if (this._state.offerIds.includes(offerId)) {
+      this._state.offerIds = this._state.offerIds.filter((n) => n !== offerId);
+    }
+    else {
+      this._state.offerIds.push(offerId);
+    }
+    this.updateElement({
+      offerIds: this._state.offerIds,
+    });
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#tripPointTypeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#tripPointDestinationChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);
+  };
+
+  static parseTripPointToState = (tripPoint) => ({...tripPoint,
+    dateTo: dayjs(tripPoint.dateTo).toDate(),
+    dateFrom: dayjs(tripPoint.dateFrom).toDate(),
+  });
+
+  static parseStateToTripPoint = (state) => {
+    const tripPoint = {...state};
+    return tripPoint;
   };
 }
