@@ -81,6 +81,7 @@ export default class BoardPresenter {
     render(this.#tripPointsList, this.#tripContainer);
     this.#renderTripPoints(0, this.#tripPoints.length);
   };
+
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
