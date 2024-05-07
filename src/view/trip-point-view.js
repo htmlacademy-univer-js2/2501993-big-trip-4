@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../const.js';
+import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utils.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {
