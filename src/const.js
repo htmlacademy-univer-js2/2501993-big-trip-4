@@ -1,5 +1,9 @@
 const TRIP_POINTS_COUNT = 20;
 
+const AUTHORIZATION = 'Basic hIfpbpd204ffg4hf6';
+
+const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
+
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DESTINATION = ['Amsterdam', 'Chamonix', 'Geneva', 'London','Helsinki','Oslo','Den Haag','Moscow'];
@@ -31,6 +35,7 @@ const Price = {
   MIN: 100,
   MAX: 1000
 };
+
 const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -59,13 +64,7 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const SortTypeDescription = {
-  [SortType.DAY]: 'Day',
-  [SortType.EVENT]: 'Event',
-  [SortType.TIME]: 'Time',
-  [SortType.PRICE]: 'Price',
-  [SortType.OFFERS]: 'Offers',
-};
+
 const TripPointType = {
   TAXI: 'taxi',
   BUS: 'bus',
@@ -78,6 +77,25 @@ const TripPointType = {
   RESTAURANT: 'restaurant'
 };
 
+const ApiServiceAnswerMethod = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+const SortTypeDescription = {
+  [SortType.DAY]: 'Day',
+  [SortType.EVENT]: 'Event',
+  [SortType.TIME]: 'Time',
+  [SortType.PRICE]: 'Price',
+  [SortType.OFFERS]: 'Offers',
+};
 
 const TripPointTypeDescription = {
   [TripPointType.TAXI]: 'Taxi',
@@ -105,6 +123,7 @@ const updateItem = (items, update) => {
   ];
 };
 
+
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -118,4 +137,4 @@ const getRandomElement = (elements) => {
   return elements[getRandomInteger(MIN, max)];
 };
 
-export{TRIP_POINTS_COUNT, TYPES, DESTINATION, DESCRIPTIONS, ElementsCount, PictureNumber, Price, updateItem, SortType, FilterType, TripPointTypeDescription, TripPointType, SortTypeDescription, UpdateType, UserAction, getRandomInteger, getRandomElement};
+export{TRIP_POINTS_COUNT, TYPES, DESTINATION, DESCRIPTIONS, ElementsCount, PictureNumber, Price, updateItem, SortType, FilterType, TripPointTypeDescription, TripPointType, SortTypeDescription, UpdateType, UserAction, getRandomInteger, getRandomElement, AUTHORIZATION, END_POINT, ApiServiceAnswerMethod, TimeLimit};

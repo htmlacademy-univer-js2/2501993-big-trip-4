@@ -4,50 +4,57 @@ import { UserAction, UpdateType } from '../const.js';
 
 export default class NewTripPointPresenter {
   #tripPointsList = null;
-  #editingTripPointComponent = null;
+  #creatingTripPointComponent = null;
+
   #changeData = null;
   #destroyCallback = null;
+
   #tripPointsModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
+
   #destinations = null;
   #offers = null;
 
-  constructor(tripPointsList, tripPointsModel, changeData) {
+  constructor({tripPointsList, tripPointsModel, destinationsModel, offersModel, changeData}) {
     this.#tripPointsList = tripPointsList;
     this.#changeData = changeData;
     this.#tripPointsModel = tripPointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
   }
 
   init = (callback) => {
     this.#destroyCallback = callback;
 
-    if (this.#editingTripPointComponent !== null) {
+    if (this.#creatingTripPointComponent !== null) {
       return;
     }
-    this.#destinations = [...this.#tripPointsModel.destinations];
-    this.#offers = [...this.#tripPointsModel.offers];
+    this.#destinations = [...this.#destinationsModel.destinations];
+    this.#offers = [...this.#offersModel.offers];
 
-    this.#editingTripPointComponent = new EditingTripPointView({
+    this.#creatingTripPointComponent = new EditingTripPointView({
       destination: this.#destinations,
       offers: this.#offers,
       isNewTripPoint: true
     });
-    this.#editingTripPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#editingTripPointComponent.setResetClickHandler(this.#handleResetClick);
+    this.#creatingTripPointComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#creatingTripPointComponent.setResetClickHandler(this.#handleResetClick);
 
-    render(this.#editingTripPointComponent, this.#tripPointsList, RenderPosition.AFTERBEGIN);
+    render(this.#creatingTripPointComponent, this.#tripPointsList, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
   destroy = () => {
-    if (this.#editingTripPointComponent === null) {
+    if (this.#creatingTripPointComponent === null) {
       return;
     }
 
     this.#destroyCallback?.();
 
-    remove(this.#editingTripPointComponent);
-    this.#editingTripPointComponent = null;
+    remove(this.#creatingTripPointComponent);
+    this.#creatingTripPointComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
