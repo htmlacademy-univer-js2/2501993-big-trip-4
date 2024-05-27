@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { getRandomInteger, getRandomElement } from '../utils.js';
-import {TRIP_POINTS_COUNT, TYPES, DESTINATION, DESCRIPTIONS, ElementsCount, PictureNumber, Price} from '../const.js';
+import {TRIP_POINTS_COUNT, TYPES, DESTINATION, DESCRIPTIONS, ElementsCount, PictureNumber, Price, getRandomInteger, getRandomElement} from '../const.js';
 
 const generateDescription = () => {
   let description = '';

@@ -1,4 +1,4 @@
-import { SortType, SortTypeDescription } from '../utils.js';
+import { SortType, SortTypeDescription } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 const DISABLED_SORT_TYPES = [SortType.EVENT, SortType.OFFERS];
 const createSortingTemplate = (currentSortType) =>
