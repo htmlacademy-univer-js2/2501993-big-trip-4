@@ -6,7 +6,7 @@ const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
 
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-const DESTINATION = ['Amsterdam', 'Chamonix', 'Geneva', 'London','Helsinki','Oslo','Den Haag','Moscow'];
+const DESTINATION = ['Amsterdam','Helsinki' , 'Geneva', 'London','Chamonix','Saint Petersburg','Ekaterinburg','Moscow'];
 
 const DESCRIPTIONS = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -84,11 +84,6 @@ const ApiServiceAnswerMethod = {
   DELETE: 'DELETE'
 };
 
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
-
 const SortTypeDescription = {
   [SortType.DAY]: 'Day',
   [SortType.EVENT]: 'Event',
@@ -107,6 +102,11 @@ const TripPointTypeDescription = {
   [TripPointType.CHECK_IN]: 'Check-in',
   [TripPointType.SIGHTSEEING]: 'Sightseeing',
   [TripPointType.RESTAURANT]: 'Restaurant'
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
 };
 
 const updateItem = (items, update) => {
