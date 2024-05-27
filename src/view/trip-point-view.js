@@ -1,6 +1,6 @@
 import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utiltools/trip-point-date.js';
+import { humanTripPointDate, getDuration, getDate, getTime } from '../utiltools/trip-point-date.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {
@@ -18,9 +18,9 @@ const createtripPointTemplate = (tripPoint, destinations, allOffers) => {
   const { basePrice, type, destination, isFavorite, dateFrom, dateTo, offers } = tripPoint;
   const alltripPointTypeOffers = allOffers.find((offer) => offer.type === type);
   const eventDuration = getDuration(dateFrom, dateTo);
-  const startDate = dateFrom !== null ? humanizeTripPointDueDate(dateFrom) : '';
+  const startDate = dateFrom !== null ? humanTripPointDate(dateFrom) : '';
   const destinationData = destinations.find((item) => item.id === destination);
-  const endDate = dateTo !== null ? humanizeTripPointDueDate(dateTo) : '';
+  const endDate = dateTo !== null ? humanTripPointDate(dateTo) : '';
   return (
     `<li class="trip-events__item">
       <div class="event">

@@ -16,10 +16,9 @@ export default class NewTripPointPresenter {
   #destinations = null;
   #offers = null;
 
-  constructor({tripPointsList, tripPointsModel, destinationsModel, offersModel, changeData}) {
+  constructor({tripPointsList, destinationsModel, offersModel, changeData}) {
     this.#tripPointsList = tripPointsList;
     this.#changeData = changeData;
-    this.#tripPointsModel = tripPointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
   }
@@ -59,6 +58,26 @@ export default class NewTripPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
+
+  setSaving = () => {
+    this.#creatingTripPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    this.#creatingTripPointComponent.shake(this.#resetFormState);
+  };
+
+  #resetFormState = () => {
+    this.#creatingTripPointComponent.updateElement({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
+  };
+
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -70,11 +89,11 @@ export default class NewTripPointPresenter {
     this.destroy();
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = (tripPoint) => {
     this.#changeData(
       UserAction.ADD_TRIP_POINT,
       UpdateType.MINOR,
-      {id: crypto.randomUUID(), ...point},
+      tripPoint,
     );
     this.destroy();
   };
