@@ -1,20 +1,11 @@
-import he from 'he';
-import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
+import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { getDateTime } from '../utils/trip-point-date.js';
+import { getDateTime } from '../utiltools/trip-point-date.js';
 import { TripPointType, TripPointTypeDescription } from '../const.js';
 
-const BLANK_TRIP_POINT = {
-  basePrice: 0,
-  dateFrom: dayjs(),
-  dateTo: dayjs(),
-  destinationId: 0,
-  isFavorite: false,
-  offerIds: [],
-  type: TripPointType.FLIGHT,
-};
 
 const renderDestinationPictures = (pictures) => pictures.length === 0 ? '' :
   pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
@@ -22,8 +13,8 @@ const renderDestinationPictures = (pictures) => pictures.length === 0 ? '' :
 const renderDestinationNames = (destinations) => destinations.length === 0 ? '' :
   destinations.map((destination) => `<option value="${destination.name}"></option>`).join('');
 const renderOffers = (allOffers, checkedOffers) => allOffers.map((offer) => `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(offer.id) ? 'checked' : ''}>
-  <label class="event__offer-label" for="event-offer-${offer.id}">
+<input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-luggage" ${checkedOffers.includes(offer.id) ? 'checked' : ''}>
+<label class="event__offer-label" for="${offer.id}">
     <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offer.price}</span>
@@ -50,9 +41,28 @@ const renderEditingPointTypeTemplate = (currentType) => Object.values(TripPointT
 <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${TripPointTypeDescription[type]}</label>
 </div>`).join('');
 
-const createEditingTripPointTemplate = (tripPoint, destinations, offers, isNewTripPoint) => {
-  const {basePrice, type, destinationId, dateFrom, dateTo, offerIds} = tripPoint;
-  const allTripPointTypeOffers = offers.find((offer) => offer.type === type);
+const renderDestinationContainer = (destination) => {
+  if (destination) {
+    return `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${destination.description !== null ? destination.description : ''}</p>
+    <div class="event__photos-container">
+                <div class="event__photos-tape">
+                ${renderDestinationPictures(destination.pictures)}
+                </div>
+              </div>
+  </section>`;
+  }
+  return '';
+};
+
+const renderResetButtonTemplate = (isNewTripPoint) => isNewTripPoint ? '<button class="event__reset-btn" type="reset">Cancel</button>' : `<button class="event__reset-btn" type="reset">Delete</button>
+  <button class="event__rollup-btn" type="button">`;
+
+const createEditingTripPointTemplate = (tripPoint, destinations, allOffers, isNewTripPoint) => {
+  const {basePrice, type, destination, dateFrom, dateTo, offers} = tripPoint;
+  const allTripPointTypeOffers = allOffers.find((offer) => offer.type === type);
+  const destinationData = destinations.find((item) => item.id === destination);
   return (
     `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -71,10 +81,10 @@ const createEditingTripPointTemplate = (tripPoint, destinations, offers, isNewTr
           </div>
         </div>
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-${destinationId}">
+          <label class="event__label  event__type-output" for="event-destination-${destination}">
           ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-${destinationId}" type="text" name="event-destination" value="${he.encode(destinations[destinationId].name)}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-${destination}" type="text" name="event-destination" value="${destinationData ? he.encode(destinationData.name) : ''}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${renderDestinationNames(destinations)}
           </datalist>
@@ -88,28 +98,29 @@ const createEditingTripPointTemplate = (tripPoint, destinations, offers, isNewTr
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min='0' value="${basePrice}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        ${isNewTripPoint ? '<button class="event__reset-btn" type="reset">Cancel</button>' :
-      `<button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">`}
+        ${renderResetButtonTemplate(isNewTripPoint)}
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
       <section class="event__details">
-        ${renderOffersContainer(allTripPointTypeOffers, offerIds)}
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destinations[destinationId].description}</p>
-          <div class="event__photos-container">
-                      <div class="event__photos-tape">
-                      ${renderDestinationPictures(destinations[destinationId].pictures)}
-                      </div>
-                    </div>
-        </section>
+      ${renderOffersContainer(allTripPointTypeOffers, offers)}
+      ${renderDestinationContainer(destinationData)}
       </section>
     </form>
   </li>`
   );
 };
+
+const TRIP_POINT_BLANK = {
+  basePrice: 0,
+  dateFrom: dayjs(),
+  dateTo: dayjs(),
+  destination: 0,
+  isFavorite: false,
+  offers: [],
+  type: TripPointType.FLIGHT,
+};
+
 export default class EditingTripPointView extends AbstractStatefulView {
   #destination = null;
   #offers = null;
@@ -117,7 +128,7 @@ export default class EditingTripPointView extends AbstractStatefulView {
   #datepickerTo = null;
   #isNewTripPoint = null;
 
-  constructor({tripPoint = BLANK_TRIP_POINT, destination, offers, isNewTripPoint}) {
+  constructor({tripPoint = TRIP_POINT_BLANK, destination, offers, isNewTripPoint}) {
     super();
     this._state = EditingTripPointView.parseTripPointToState(tripPoint);
     this.#destination = destination;
@@ -184,15 +195,15 @@ export default class EditingTripPointView extends AbstractStatefulView {
     evt.preventDefault();
     const destination = this.#destination.find((dest) => dest.name === evt.target.value);
     this.updateElement({
-      destinationId: destination.id,
+      destination: destination.id,
     });
   };
 
   #tripPointTypeChangeHandler = (evt) => {
     evt.preventDefault();
+    this._state.offers = [];
     this.updateElement({
       type: evt.target.value,
-      offerIds: [],
     });
   };
 
@@ -247,16 +258,17 @@ export default class EditingTripPointView extends AbstractStatefulView {
 
   #offersChangeHandler = (evt) => {
     evt.preventDefault();
-    const offerId = Number(evt.target.id.slice(-1));
-    const offerIds = this._state.offerIds.filter((n) => n !== offerId);
-    let currentOfferIds = [...this._state.offerIds];
-    if (offerIds.length !== this._state.offerIds.length) {
-      currentOfferIds = offerIds;
-    } else {
-      currentOfferIds.push(offerId);
+    const offerId = evt.target.id;
+    const offers = this._state.offers.filter((n) => n !== offerId);
+    let currentOffers = [...this._state.offers];
+    if (offers.length !== this._state.offers.length) {
+      currentOffers = offers;
+    }
+    else {
+      currentOffers.push(offerId);
     }
     this._setState({
-      offerIds: currentOfferIds,
+      offers: currentOffers,
     });
   };
 

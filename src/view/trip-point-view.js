@@ -1,24 +1,25 @@
 import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utils/trip-point-date.js';
+import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utiltools/trip-point-date.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {
     return '';
   }
   let result = '';
-  allOffers.forEach((offer) => {
+  allOffers.offers.forEach((offer) => {
     if (checkedOffers.includes(offer.id)) {
       result = `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
     }
   });
   return result;
 };
-const createtripPointTemplate = (tripPoint, destinations, offers) => {
-  const { basePrice, type, destinationId, isFavorite, dateFrom, dateTo, offerIds } = tripPoint;
-  const alltripPointTypeOffers = offers.find((offer) => offer.type === type);
+const createtripPointTemplate = (tripPoint, destinations, allOffers) => {
+  const { basePrice, type, destination, isFavorite, dateFrom, dateTo, offers } = tripPoint;
+  const alltripPointTypeOffers = allOffers.find((offer) => offer.type === type);
   const eventDuration = getDuration(dateFrom, dateTo);
   const startDate = dateFrom !== null ? humanizeTripPointDueDate(dateFrom) : '';
+  const destinationData = destinations.find((item) => item.id === destination);
   const endDate = dateTo !== null ? humanizeTripPointDueDate(dateTo) : '';
   return (
     `<li class="trip-events__item">
@@ -27,8 +28,7 @@ const createtripPointTemplate = (tripPoint, destinations, offers) => {
         <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event ${type} icon">
       </div>
-      <h3 class="event__title">${type} ${he.encode(destinations[destinationId].name)}</h3>
-      <div class="event__schedule">
+      <h3 class="event__title">${type} ${destinationData ? he.encode(destinationData.name) : ''}</h3>
         <p class="event__time">
         <time class="event__start-time" datetime="${dateFrom}">${(startDate === endDate) ? getTime(dateFrom) : startDate}</time>
         &mdash;
@@ -41,7 +41,7 @@ const createtripPointTemplate = (tripPoint, destinations, offers) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${renderOffers(alltripPointTypeOffers.offers, offerIds)}
+      ${renderOffers(alltripPointTypeOffers, offers)}
       </ul>
       <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
       <span class="visually-hidden">Add to favorite</span>
