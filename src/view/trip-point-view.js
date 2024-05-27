@@ -1,22 +1,22 @@
+import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utils.js';
+import { humanizeTripPointDueDate, getDuration, getDate, getTime } from '../utils/trip-point-date.js';
 
 const renderOffers = (allOffers, checkedOffers) => {
   if (!allOffers) {
     return '';
   }
-
-  return allOffers.reduce((result, offer) => {
+  let result = '';
+  allOffers.forEach((offer) => {
     if (checkedOffers.includes(offer.id)) {
-      return `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
+      result = `${result}<li class="event__offer"><span class="event__offer-title">${offer.title}</span>&plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span></li>`;
     }
-    return result;
-  }, '');
+  });
+  return result;
 };
-
-const createTripPointTemplate = (tripPoint, destinations, offers) => {
+const createtripPointTemplate = (tripPoint, destinations, offers) => {
   const { basePrice, type, destinationId, isFavorite, dateFrom, dateTo, offerIds } = tripPoint;
-  const allTripPointTypeOffers = offers.find((offer) => offer.type === type);
+  const alltripPointTypeOffers = offers.find((offer) => offer.type === type);
   const eventDuration = getDuration(dateFrom, dateTo);
   const startDate = dateFrom !== null ? humanizeTripPointDueDate(dateFrom) : '';
   const endDate = dateTo !== null ? humanizeTripPointDueDate(dateTo) : '';
@@ -27,7 +27,7 @@ const createTripPointTemplate = (tripPoint, destinations, offers) => {
         <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event ${type} icon">
       </div>
-      <h3 class="event__title">${type} ${ destinations[destinationId].name}</h3>
+      <h3 class="event__title">${type} ${he.encode(destinations[destinationId].name)}</h3>
       <div class="event__schedule">
         <p class="event__time">
         <time class="event__start-time" datetime="${dateFrom}">${(startDate === endDate) ? getTime(dateFrom) : startDate}</time>
@@ -41,7 +41,7 @@ const createTripPointTemplate = (tripPoint, destinations, offers) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${renderOffers(allTripPointTypeOffers.offers, offerIds)}
+        ${renderOffers(alltripPointTypeOffers.offers, offerIds)}
       </ul>
       <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
       <span class="visually-hidden">Add to favorite</span>
@@ -56,12 +56,10 @@ const createTripPointTemplate = (tripPoint, destinations, offers) => {
     </li>`
   );
 };
-
 export default class TripPointView extends AbstractView{
   #tripPoint = null;
   #destination = null;
   #offers = null;
-
   constructor(tripPoint, destination, offers) {
     super();
     this.#tripPoint = tripPoint;
@@ -70,7 +68,7 @@ export default class TripPointView extends AbstractView{
   }
 
   get template() {
-    return createTripPointTemplate(this.#tripPoint, this.#destination, this.#offers);
+    return createtripPointTemplate(this.#tripPoint, this.#destination, this.#offers);
   }
 
   setEditClickHandler = (callback) => {
