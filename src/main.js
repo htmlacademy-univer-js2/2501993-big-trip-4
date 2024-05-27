@@ -9,7 +9,7 @@ import TripPointsApiService from './api-service/trip-points-apiservice.js';
 import DestinationsApiService from './api-service/destinations-apiservice.js';
 import OffersApiService from './api-service/offers-apiservice.js';
 import { END_POINT, AUTHORIZATION } from './const.js';
-
+//
 const siteHeaderElement = document.querySelector('.trip-main');
 const siteMainElement = document.querySelector('.page-main');
 
