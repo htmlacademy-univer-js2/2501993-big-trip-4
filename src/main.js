@@ -5,9 +5,9 @@ import TripPointsModel from './model/trip-point-model.js';
 import FilterModel from './model/filter-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';
-import TripPointsApiService from './api-service/trip-points-api-service.js';
-import DestinationsApiService from './api-service/destinations-api-service.js';
-import OffersApiService from './api-service/offers-api-service.js';
+import TripPointsApiService from './api-service/trip-points-apiservice.js';
+import DestinationsApiService from './api-service/destinations-apiservice.js';
+import OffersApiService from './api-service/offers-apiservice.js';
 import { END_POINT, AUTHORIZATION } from './const.js';
 
 const siteHeaderElement = document.querySelector('.trip-main');

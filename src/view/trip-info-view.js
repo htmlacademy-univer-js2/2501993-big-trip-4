@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanTripPointDate } from '../utiltools/date-trip-point.js';
+import {humanTripPointDate } from '../utiltools/trip-point-date.js';
 
 const renderRouteTrip = (tripPoints, destinations) => {
   if (tripPoints.length === 0) {
