@@ -1,4 +1,4 @@
-import ApiService from '../framework/api-service.js';
+import ApiService from '../framework/apiservice.js';
 import { ApiServiceAnswerMethod } from '../const.js';
 
 export default class TripPointsApiService extends ApiService {
