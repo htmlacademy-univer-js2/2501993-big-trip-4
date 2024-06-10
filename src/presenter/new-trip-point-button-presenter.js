@@ -7,7 +7,7 @@ export default class NewTripPointButtonPresenter {
   #offersModel = null;
   #boardPresenter = null;
 
-  #newTripPointButtonPart = null;
+  #newTripPointButtonComponent = null;
 
   constructor({newTripPointButtonContainer, destinationsModel, offersModel, boardPresenter}) {
     this.#newTripPointButtonContainer = newTripPointButtonContainer;
@@ -17,23 +17,23 @@ export default class NewTripPointButtonPresenter {
   }
 
   init() {
-    this.#newTripPointButtonPart = new NewTripPointButtonView();
+    this.#newTripPointButtonComponent = new NewTripPointButtonView();
   }
 
-  #handleblankTripPointFormClose = () => {
-    this.#newTripPointButtonPart.element.disabled = false;
-  };
-
-  #handleNewblankTripPointButtonClick = () => {
-    this.#boardPresenter.createTripPoint(this.#handleblankTripPointFormClose);
-    this.#newTripPointButtonPart.element.disabled = true;
-  };
-
   renderNewTripPointButton = () => {
-    render(this.#newTripPointButtonPart, this.#newTripPointButtonContainer);
-    this.#newTripPointButtonPart.setClickHandler(this.#handleNewblankTripPointButtonClick);
+    render(this.#newTripPointButtonComponent, this.#newTripPointButtonContainer);
+    this.#newTripPointButtonComponent.setClickHandler(this.#handleNewTripPointButtonClick);
     if (this.#offersModel.offers.length === 0 || this.#destinationsModel.destinations.length === 0) {
-      this.#newTripPointButtonPart.element.disabled = true;
+      this.#newTripPointButtonComponent.element.disabled = true;
     }
+  };
+
+  #handleNewTripPointFormClose = () => {
+    this.#newTripPointButtonComponent.element.disabled = false;
+  };
+
+  #handleNewTripPointButtonClick = () => {
+    this.#boardPresenter.createTripPoint(this.#handleNewTripPointFormClose);
+    this.#newTripPointButtonComponent.element.disabled = true;
   };
 }

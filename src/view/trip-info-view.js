@@ -1,57 +1,56 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanTripPointDate } from '../utiltools/trip-point-date.js';
+import {humanizeDate } from '../utils/trip-point-date.js';
 
-const renderRouteTrip = (tripPoints, destinations) => {
+const renderRoute = (tripPoints, destinations) => {
   if (tripPoints.length === 0) {
     return '';
   }
-
-  const tripWithoutRepeats = [tripPoints[0].destination];
+  const routeWithoutRepeats = [tripPoints[0].destination];
   for (let i = 1; i < tripPoints.length; i++) {
     if (tripPoints[i].destination !== tripPoints[i - 1].destination) {
-      tripWithoutRepeats.push(tripPoints[i].destination);
+      routeWithoutRepeats.push(tripPoints[i].destination);
     }
   }
 
-  if (tripWithoutRepeats.length > 3) {
-    const startTripPoint = destinations.find((item) => item.id === tripWithoutRepeats[0]);
-    const endTripPoint = destinations.find((item) => item.id === tripWithoutRepeats[tripWithoutRepeats.length - 1]);
-    return `${startTripPoint.name} &mdash; ... &mdash; ${endTripPoint.name}`;
+  if (routeWithoutRepeats.length > 3) {
+    const start = destinations.find((item) => item.id === routeWithoutRepeats[0]);
+    const end = destinations.find((item) => item.id === routeWithoutRepeats[routeWithoutRepeats.length - 1]);
+    return `${start.name} &mdash; ... &mdash; ${end.name}`;
   }
 
-  return tripWithoutRepeats.map((destination) => `${destinations.find((item) => item.id === destination).name}`).join(' &mdash; ');
+  return routeWithoutRepeats.map((destination) => `${destinations.find((item) => item.id === destination).name}`).join(' &mdash; ');
 
 };
-const renderDatesTrip = (tripPoints) => {
+const renderDates = (tripPoints) => {
   if (tripPoints.length === 0) {
     return '';
   }
-  const startDate = tripPoints[0].dateFrom !== null ? humanTripPointDate(tripPoints[0].dateFrom) : '';
-  const endDate = tripPoints[tripPoints.length - 1].dateTo !== null ? humanTripPointDate(tripPoints[tripPoints.length - 1].dateTo) : '';
+  const startDate = tripPoints[0].dateFrom !== null ? humanizeDate(tripPoints[0].dateFrom) : '';
+  const endDate = tripPoints[tripPoints.length - 1].dateTo !== null ? humanizeDate(tripPoints[tripPoints.length - 1].dateTo) : '';
   return `${startDate}&nbsp;&mdash;&nbsp;${endDate}`;
 };
 
-const getPriceforTripPointOffers = (tripPoint, offers) => {
+const calculateOfferPrice = (tripPoint, offers) => {
   if (offers.length === 0) {
     return 0;
   }
-  let priceforOffersTripPoint = 0;
+  let totalOfferPrice = 0;
   const offersByType = offers.find((offer) => offer.type === tripPoint.type);
   const tripPointOffers = tripPoint.offers;
   tripPointOffers.forEach((offer) => {
-    priceforOffersTripPoint += offersByType.offers.find((item) => item.id === offer).price;
+    totalOfferPrice += offersByType.offers.find((item) => item.id === offer).price;
   });
-  return priceforOffersTripPoint;
+  return totalOfferPrice;
 };
 
-const renderTotalPriceTrip = (tripPoints, offers) => {
+const calculateTotalPrice = (tripPoints, offers) => {
   if (tripPoints.length === 0) {
     return '';
   }
   let totalPrice = 0;
   tripPoints.forEach((tripPoint) => {
     totalPrice += tripPoint.basePrice;
-    totalPrice += getPriceforTripPointOffers(tripPoint, offers);
+    totalPrice += calculateOfferPrice(tripPoint, offers);
   });
   return `Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>`;
 };
@@ -61,11 +60,11 @@ const createTripInfoTemplate = (tripPoints, destinations, offers) => {
     return '';
   }
   return `<div class="trip-info"><div class="trip-info__main">
-  <h1 class="trip-info__title">${renderRouteTrip(tripPoints, destinations)}</h1>
-  <p class="trip-info__dates">${renderDatesTrip(tripPoints)}</p>
+  <h1 class="trip-info__title">${renderRoute(tripPoints, destinations)}</h1>
+  <p class="trip-info__dates">${renderDates(tripPoints)}</p>
 </div>
 <p class="trip-info__cost">
-  ${renderTotalPriceTrip(tripPoints, offers)}
+  ${calculateTotalPrice(tripPoints, offers)}
 </p></div>`;
 };
 

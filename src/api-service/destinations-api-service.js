@@ -1,4 +1,4 @@
-import ApiService from '../framework/apiservice.js';
+import ApiService from '../framework/api-service.js';
 
 export default class DestinationsApiService extends ApiService {
   get destinations() {

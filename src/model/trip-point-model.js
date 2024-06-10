@@ -13,7 +13,7 @@ export default class TripPointsModel extends Observable {
   init = async () => {
     try {
       const tripPoints = await this.#tripPointsApiService.tripPoints;
-      this.#tripPoints = tripPoints.map(this.#adaptationToClient);
+      this.#tripPoints = tripPoints.map(this.#adaptToClient);
     } catch(err) {
       this.#tripPoints = [];
     }
@@ -35,7 +35,7 @@ export default class TripPointsModel extends Observable {
 
     try {
       const response = await this.#tripPointsApiService.updateTripPoint(update);
-      const updatedTripPoint = this.#adaptationToClient(response);
+      const updatedTripPoint = this.#adaptToClient(response);
       this.#tripPoints = [
         ...this.#tripPoints.slice(0, index),
         updatedTripPoint,
@@ -50,7 +50,7 @@ export default class TripPointsModel extends Observable {
   addTripPoint = async (updateType, update) => {
     try {
       const response = await this.#tripPointsApiService.addTripPoint(update);
-      const newTripPoint = this.#adaptationToClient(response);
+      const newTripPoint = this.#adaptToClient(response);
       this.#tripPoints.unshift(newTripPoint);
       this._notify(updateType, newTripPoint);
     } catch(err) {
@@ -76,19 +76,19 @@ export default class TripPointsModel extends Observable {
     }
   };
 
-  #adaptationToClient = (tripPoint) => {
-    const adptdTripPoint = {...tripPoint,
+  #adaptToClient = (tripPoint) => {
+    const adaptedTripPoint = {...tripPoint,
       basePrice: tripPoint['base_price'],
       dateFrom: tripPoint['date_from'] !== null ? new Date(tripPoint['date_from']) : tripPoint['date_from'],
       dateTo: tripPoint['date_to'] !== null ? new Date(tripPoint['date_to']) : tripPoint['date_to'],
       isFavorite: tripPoint['is_favorite'],
     };
 
-    delete adptdTripPoint['base_price'];
-    delete adptdTripPoint['date_from'];
-    delete adptdTripPoint['date_to'];
-    delete adptdTripPoint['is_favorite'];
+    delete adaptedTripPoint['base_price'];
+    delete adaptedTripPoint['date_from'];
+    delete adaptedTripPoint['date_to'];
+    delete adaptedTripPoint['is_favorite'];
 
-    return adptdTripPoint;
+    return adaptedTripPoint;
   };
 }
