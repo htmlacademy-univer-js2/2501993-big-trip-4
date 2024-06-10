@@ -8,8 +8,8 @@ const NoTripPointsTextType = {
   [FilterType.FUTURE]: 'There are no future events now',
 };
 
-const createNoTripPointTemplate = (filterType) => {
-  const noTripPointTextValue = NoTripPointsTextType[filterType];
+const createNoTripPointTemplate = (FilterType) => {
+  const noTripPointTextValue = NoTripPointsTextType[FilterType];
   return (
     `<p class="trip-events__msg">
     ${noTripPointTextValue}</p>`

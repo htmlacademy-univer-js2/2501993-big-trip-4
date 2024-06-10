@@ -9,7 +9,6 @@ export default class NewTripPointPresenter {
   #changeData = null;
   #destroyCallback = null;
 
-  #tripPointsModel = null;
   #destinationsModel = null;
   #offersModel = null;
 
@@ -95,6 +94,5 @@ export default class NewTripPointPresenter {
       UpdateType.MINOR,
       tripPoint,
     );
-    this.destroy();
   };
 }

@@ -2,10 +2,12 @@ import TripPointView from '../view/trip-point-view.js';
 import EditingTripPointView from '../view/editing-trip-point-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { UserAction, UpdateType } from '../const.js';
+
 const Mode = {
   PREVIEW: 'preview',
   EDITING: 'editing',
 };
+
 export default class TripPointPresenter {
   #tripPointsList = null;
   #destinationsModel = null;
@@ -16,8 +18,10 @@ export default class TripPointPresenter {
 
   #previewTripPointComponent = null;
   #editingTripPointComponent = null;
+
   #changeData = null;
   #changeMode = null;
+
   #tripPoint = null;
   #mode = Mode.PREVIEW;
 
@@ -37,7 +41,6 @@ export default class TripPointPresenter {
     const prevPreviewTripPointComponent = this.#previewTripPointComponent;
     const prevEditingTripPointComponent = this.#editingTripPointComponent;
 
-
     this.#previewTripPointComponent = new TripPointView(this.#tripPoint, this.#destinations, this.#offers);
     this.#editingTripPointComponent = new EditingTripPointView({
       tripPoint: this.#tripPoint,
@@ -56,9 +59,11 @@ export default class TripPointPresenter {
       render(this.#previewTripPointComponent, this.#tripPointsList);
       return;
     }
+
     if (this.#mode === Mode.PREVIEW) {
       replace(this.#previewTripPointComponent, prevPreviewTripPointComponent);
     }
+
     if (this.#mode === Mode.EDITING) {
       replace(this.#previewTripPointComponent, prevEditingTripPointComponent);
       this.#mode = Mode.PREVIEW;
@@ -79,7 +84,6 @@ export default class TripPointPresenter {
       this.#replaceEditingTripPointToPreviewPoint();
     }
   };
-
 
   setSaving = () => {
     if (this.#mode === Mode.EDITING) {

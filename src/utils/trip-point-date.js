@@ -6,7 +6,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 const DATE_TIME_FORMAT = 'DD/MM/YY hh:mm';
 const TIME_FORMAT = 'hh:mm';
 
-const humanTripPointDate = (date) => dayjs(date).format('DD MMM');
+const humanizeDate = (date) => dayjs(date).format('DD MMM');
 
 const getDaysOutput = (days) => days <= 0 ? '' : `${`${days}`.padStart(2, '0')}D`;
 
@@ -14,11 +14,17 @@ const getHoursOutput = (days, restHours) => (days <= 0 && restHours <= 0) ? '' :
 
 const getMinutesOutput = (restMinutes) => `${`${restMinutes}`.padStart(2, '0')}M`;
 
-const isPointDatePast = (dateTo) => dayjs().diff(dayjs(dateTo), 'minute') > 0;
+const getDate = (date) => dayjs(date).format(DATE_FORMAT);
 
-const isPointDateFuture = (dateFrom) => dayjs(dateFrom).diff(dayjs(), 'minute') > 0;
+const getTime = (date) => dayjs(date).format(TIME_FORMAT);
 
-const isPointDatePresent = (dateFrom, dateTo) => dayjs().diff(dayjs(dateFrom), 'minute') >= 0 && dayjs(dateTo).diff(dayjs(), 'minute') >= 0;
+const getDateTime = (date) => dayjs(date).format(DATE_TIME_FORMAT);
+
+const isPastDate = (dateTo) => dayjs().diff(dayjs(dateTo), 'minute') > 0;
+
+const isFutureDate = (dateFrom) => dayjs(dateFrom).diff(dayjs(), 'minute') > 0;
+
+const isCurrentDate = (dateFrom, dateTo) => dayjs().diff(dayjs(dateFrom), 'minute') >= 0 && dayjs(dateTo).diff(dayjs(), 'minute') >= 0;
 
 const getDuration = (dateFrom, dateTo) => {
   const start = dayjs(dateFrom);
@@ -36,11 +42,4 @@ const getDuration = (dateFrom, dateTo) => {
   return `${daysOutput} ${hoursOutput} ${minutesOutput}`;
 };
 
-const getDate = (date) => dayjs(date).format(DATE_FORMAT);
-
-const getTime = (date) => dayjs(date).format(TIME_FORMAT);
-
-const getDateTime = (date) => dayjs(date).format(DATE_TIME_FORMAT);
-
-
-export {humanTripPointDate, getDuration, getDate, getTime, getDateTime, isPointDatePast, isPointDateFuture, isPointDatePresent };
+export { humanizeDate, getDuration, getDate, getTime, getDateTime, isPastDate, isFutureDate, isCurrentDate };

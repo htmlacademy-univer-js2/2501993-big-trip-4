@@ -1,5 +1,5 @@
-import ApiService from '../framework/apiservice.js';
-import { ApiServiceAnswerMethod } from '../const.js';
+import ApiService from '../framework/api-service.js';
+import { ApiServiceResponseMethod } from '../const.js';
 
 export default class TripPointsApiService extends ApiService {
   get tripPoints() {
@@ -10,7 +10,7 @@ export default class TripPointsApiService extends ApiService {
   updateTripPoint = async (tripPoint) => {
     const response = await this._load({
       url: `points/${tripPoint.id}`,
-      method: ApiServiceAnswerMethod.PUT,
+      method: ApiServiceResponseMethod.PUT,
       body: JSON.stringify(this.#adaptToServer(tripPoint)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
@@ -23,7 +23,7 @@ export default class TripPointsApiService extends ApiService {
   addTripPoint = async (tripPoint) => {
     const response = await this._load({
       url: 'points',
-      method: ApiServiceAnswerMethod.POST,
+      method: ApiServiceResponseMethod.POST,
       body: JSON.stringify(this.#adaptToServer(tripPoint)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
@@ -36,25 +36,25 @@ export default class TripPointsApiService extends ApiService {
   deleteTripPoint = async (tripPoint) => {
     const response = await this._load({
       url: `points/${tripPoint.id}`,
-      method: ApiServiceAnswerMethod.DELETE,
+      method: ApiServiceResponseMethod.DELETE,
     });
 
     return response;
   };
 
   #adaptToServer = (tripPoint) => {
-    const adptdTripPoint = {...tripPoint,
+    const adaptedTripPoint = {...tripPoint,
       'base_price': tripPoint.basePrice,
       'date_from': tripPoint.dateFrom instanceof Date ? tripPoint.dateFrom.toISOString() : null,
       'date_to': tripPoint.dateTo instanceof Date ? tripPoint.dateTo.toISOString() : null,
       'is_favorite': tripPoint.isFavorite,
     };
 
-    delete adptdTripPoint.basePrice;
-    delete adptdTripPoint.dateFrom;
-    delete adptdTripPoint.dateTo;
-    delete adptdTripPoint.isFavorite;
+    delete adaptedTripPoint.basePrice;
+    delete adaptedTripPoint.dateFrom;
+    delete adaptedTripPoint.dateTo;
+    delete adaptedTripPoint.isFavorite;
 
-    return adptdTripPoint;
+    return adaptedTripPoint;
   };
 }
