@@ -1,5 +1,5 @@
 import { FilterType } from '../const';
-import { isPastDate, isFutureDate, isCurrentDate  } from './trip-point-date.js';
+import { isPastDate, isFutureDate, isCurrentDate } from './trip-point-date.js';
 
 const filter = {
   [FilterType.EVERYTHING]: (tripPoints) => tripPoints,

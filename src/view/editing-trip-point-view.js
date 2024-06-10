@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { getDateTime } from '../utils/trip-point-date.js';
 import { TripPointType, TripPointTypeDescription } from '../const.js';
 
 const BLANK_TRIP_POINT = {
@@ -41,15 +40,15 @@ const createOffersSectionTemplate = (allOffers, checkedOffers, isDisabled) => (!
     </div>
     </section>`;
 
-    const createTripPointDateTemplate = (dateFrom, dateTo, isDisabled) => (
-      `<div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('MMM D, YYYY H:mm')} ${isDisabled ? 'disabled' : ''}">
-        &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('MMM D, YYYY H:mm')} ${isDisabled ? 'disabled' : ''}">
-      </div>`
-    );
+const createTripPointDateTemplate = (dateFrom, dateTo, isDisabled) => (
+  `<div class="event__field-group  event__field-group--time">
+      <label class="visually-hidden" for="event-start-time-1">From</label>
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(dateFrom).format('MMM D, YYYY H:mm')} ${isDisabled ? 'disabled' : ''}">
+      &mdash;
+      <label class="visually-hidden" for="event-end-time-1">To</label>
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(dateTo).format('MMM D, YYYY H:mm')} ${isDisabled ? 'disabled' : ''}">
+  </div>`
+);
 
 
 const createTripPointTypeTemplate = (currentType, isDisabled) => Object.values(TripPointType).map((type) => `<div class="event__type-item">
@@ -303,24 +302,24 @@ export default class EditingTripPointView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     const typeList = this.element.querySelector('.event__type-list');
     if (typeList) {
-        typeList.addEventListener('change', this.#tripPointTypeChangeHandler);
+      typeList.addEventListener('change', this.#tripPointTypeChangeHandler);
     }
 
     const inputDestination = this.element.querySelector('.event__input--destination');
     if (inputDestination) {
-        inputDestination.addEventListener('change', this.#tripPointDestinationChangeHandler);
+      inputDestination.addEventListener('change', this.#tripPointDestinationChangeHandler);
     }
 
     const availableOffers = this.element.querySelector('.event__available-offers');
     if (availableOffers && this.#offersByType && this.#offersByType.offers.length > 0) {
-        availableOffers.addEventListener('change', this.#offersChangeHandler);
+      availableOffers.addEventListener('change', this.#offersChangeHandler);
     }
 
     const inputPrice = this.element.querySelector('.event__input--price');
     if (inputPrice) {
-        inputPrice.addEventListener('change', this.#tripPointPriceChangeHandler);
+      inputPrice.addEventListener('change', this.#tripPointPriceChangeHandler);
     }
-};
+  };
 
   #setOuterHandlers = () => {
     if (!this.#isNewTripPoint) {

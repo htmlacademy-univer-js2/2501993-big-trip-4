@@ -8,15 +8,15 @@ const NoTripPointsTextType = {
   [FilterType.FUTURE]: 'There are no future events now',
 };
 
-const createNoTripPointTemplate = (FilterType) => {
-  const noTripPointTextValue = NoTripPointsTextType[FilterType];
+const createNoTripPointTemplate = (filterType) => {
+  const noTripPointTextValue = NoTripPointsTextType[filterType];
   return (
     `<p class="trip-events__msg">
     ${noTripPointTextValue}</p>`
   );
 };
 
-export default class NoTripPointView extends AbstractView{
+export default class NoTripPointView extends AbstractView {
   #filterType = null;
 
   constructor(filterType) {
